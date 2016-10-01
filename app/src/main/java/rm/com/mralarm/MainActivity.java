@@ -1,8 +1,6 @@
 package rm.com.mralarm;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -18,8 +16,6 @@ import static rm.com.mralarm.TimeUtils.INTERVALS;
 import static rm.com.mralarm.TimeUtils.TO_TIMES;
 
 public final class MainActivity extends AppCompatActivity {
-
-  final static Handler UI_HANDLER = new Handler(Looper.getMainLooper());
 
   @BindView(R.id.send_from)
   Spinner from;
@@ -100,14 +96,9 @@ public final class MainActivity extends AppCompatActivity {
 
     settings.setOn(shouldSend);
 
-    UI_HANDLER.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        from.setEnabled(shouldSend);
-        to.setEnabled(shouldSend);
-        interval.setEnabled(shouldSend);
-      }
-    }, 100);
+    from.setEnabled(shouldSend);
+    to.setEnabled(shouldSend);
+    interval.setEnabled(shouldSend);
   }
 
   private void reschedule() {

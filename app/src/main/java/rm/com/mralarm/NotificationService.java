@@ -69,10 +69,9 @@ public final class NotificationService extends Service {
   @Override
   public void onCreate() {
     final NotificationSettings settings = new NotificationSettings(getApplicationContext());
-    final HandlerThread thread = new HandlerThread("NotificationService", Process.THREAD_PRIORITY_MORE_FAVORABLE);
+    final HandlerThread thread = new HandlerThread("NotificationService", Process.THREAD_PRIORITY_LESS_FAVORABLE);
     thread.start();
 
-    Log.d("NotificationService", "onCreate");
     sServiceHandler = new Handler(thread.getLooper());
 
     rescheduleNotifications(
