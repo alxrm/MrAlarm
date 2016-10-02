@@ -14,6 +14,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import java.util.Date;
+
 import static rm.com.mralarm.TimeUtils.nextDelay;
 import static rm.com.mralarm.TimeUtils.nextTime;
 
@@ -42,6 +44,8 @@ public final class NotificationService extends Service {
       public void run() {
         showNotification(ctx);
 
+        Log.d("NotificationService", "Notification " + new Date(System.currentTimeMillis()));
+
         sServiceHandler.postDelayed(this, nextDelay(interval, from, to));
       }
     }, nextTime(interval, from, to));
@@ -59,6 +63,7 @@ public final class NotificationService extends Service {
     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ctx);
     Notification ntf = new NotificationCompat.Builder(ctx)
         .setSmallIcon(R.mipmap.ic_launcher)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setContentTitle("Yo")
         .build();
 
@@ -69,7 +74,7 @@ public final class NotificationService extends Service {
   @Override
   public void onCreate() {
     final NotificationSettings settings = new NotificationSettings(getApplicationContext());
-    final HandlerThread thread = new HandlerThread("NotificationService", Process.THREAD_PRIORITY_LESS_FAVORABLE);
+    final HandlerThread thread = new HandlerThread("NotificationService", Process.THREAD_PRIORITY_BACKGROUND);
     thread.start();
 
     sServiceHandler = new Handler(thread.getLooper());
