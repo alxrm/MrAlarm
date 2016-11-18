@@ -23,7 +23,7 @@ final class TimeUtils {
     TO_TIMES.put("4:00", 4);
     TO_TIMES.put("7:00", 7);
 
-    INTERVALS.put("30 min", 1800000);
+    INTERVALS.put("5 min", 300000);
     INTERVALS.put("2 hrs", 7200000);
   }
 

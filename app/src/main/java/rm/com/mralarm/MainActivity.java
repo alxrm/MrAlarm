@@ -6,6 +6,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import com.evernote.android.job.JobManager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -66,12 +68,13 @@ public final class MainActivity extends AppCompatActivity {
     from.setEnabled(should.isChecked());
     to.setEnabled(should.isChecked());
     interval.setEnabled(should.isChecked());
+
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    reschedule();
+    reschedule(settings.isOn());
   }
 
   @OnItemSelected(R.id.send_from)
@@ -91,8 +94,7 @@ public final class MainActivity extends AppCompatActivity {
 
   @OnCheckedChanged(R.id.send_toggle)
   void onNotifierToggle(final boolean shouldSend) {
-    if (shouldSend) NotificationService.start(this);
-    else NotificationService.stop(this);
+    reschedule(shouldSend);
 
     settings.setOn(shouldSend);
 
@@ -101,12 +103,8 @@ public final class MainActivity extends AppCompatActivity {
     interval.setEnabled(shouldSend);
   }
 
-  private void reschedule() {
-    NotificationService.rescheduleNotifications(
-        this,
-        settings.interval(),
-        settings.from(),
-        settings.to()
-    );
+  private void reschedule(boolean should) {
+    if (should) NotifierJob.scheduleNotifier(this);
+    else JobManager.instance().cancelAll();
   }
 }
