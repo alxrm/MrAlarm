@@ -27,28 +27,28 @@ final class TimeUtils {
     INTERVALS.put("2 hrs", 7200000);
   }
 
-  static long nextTime(int interval, int from, int to) {
-    long delay = nextDelay(interval, from, to);
+  static long nextTimeRelative(int intervalMillis, int fromHrs, int toHrs) {
+    long delay = nextDelay(intervalMillis, fromHrs, toHrs);
 
     return SystemClock.uptimeMillis() + delay;
   }
 
-  static long nextDelay(int interval, int from, int to) {
-    return nextAbsoluteTime(interval, from, to) - System.currentTimeMillis() + 1000;
+  static long nextDelay(int intervalMillis, int fromHrs, int toHrs) {
+    return nextAbsoluteTime(intervalMillis, fromHrs, toHrs) - System.currentTimeMillis() + 1000;
   }
 
-  private static long nextAbsoluteTime(int interval, int from, int to) {
+  private static long nextAbsoluteTime(int intervalMillis, int fromHrs, int toHrs) {
     final Calendar fromTime = Calendar.getInstance();
     final Calendar toTime = Calendar.getInstance();
 
     final Calendar nextNotificationTime = Calendar.getInstance();
     final Calendar curTime = Calendar.getInstance();
 
-    setCalendarHour(fromTime, from);
-    setCalendarHour(toTime, to);
-    setCalendarHour(nextNotificationTime, from);
+    setCalendarHour(fromTime, fromHrs);
+    setCalendarHour(toTime, toHrs);
+    setCalendarHour(nextNotificationTime, fromHrs);
 
-    if (from < to) {
+    if (fromHrs < toHrs) {
       if (curTime.before(fromTime)) {
         return nextNotificationTime.getTimeInMillis();
       }
@@ -58,20 +58,20 @@ final class TimeUtils {
         return nextNotificationTime.getTimeInMillis();
       }
 
-      moveToIntervalAfterCurrent(nextNotificationTime, curTime, interval);
+      moveToIntervalAfterCurrent(nextNotificationTime, curTime, intervalMillis);
 
       return nextNotificationTime.getTimeInMillis();
 
     } else {
       if (curTime.before(toTime)) {
         nextNotificationTime.add(Calendar.DAY_OF_YEAR, -1);
-        moveToIntervalAfterCurrent(nextNotificationTime, curTime, interval);
+        moveToIntervalAfterCurrent(nextNotificationTime, curTime, intervalMillis);
 
         return nextNotificationTime.getTimeInMillis();
       }
 
       if (curTime.after(fromTime)) {
-        moveToIntervalAfterCurrent(nextNotificationTime, curTime,  interval);
+        moveToIntervalAfterCurrent(nextNotificationTime, curTime,  intervalMillis);
 
         return nextNotificationTime.getTimeInMillis();
       }
